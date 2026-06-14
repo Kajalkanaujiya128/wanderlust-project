@@ -4,7 +4,9 @@ const Listing=require("../models/listing");
 
 //for index
 module.exports.index=async(req,res)=>{
+   console.log("INDEX ROUTE HIT");
  const allListings =await  Listing.find({});
+  console.log("LISTINGS =", allListings.length);
    res.render("listings/index",{allListings});
 };
 
