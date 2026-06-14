@@ -42,12 +42,13 @@ app.use(express.static(path.join(__dirname,"/public")));
 //cd C:\Users\Kajal kanaujiya\Downloads\mongosh-2.8.2-win32-x64\bin
 const store=MongoStore.create({
     mongoUrl:dbUrl,
-    crypto:{
-        secret:process.env.SECRET,
-    },
+     collectionName: "sessions", 
+    // crypto:{
+    //     secret:process.env.SECRET,
+    // },
     touchAfter:24*3600,
 });
-
+console.log("DB URL:", dbUrl);
 store.on("error",(err)=>{
     console.log("ERROR in MONGO SESSION STORE",err);
 });
@@ -55,16 +56,13 @@ const sessionOptions={
     store,
     secret:process.env.SECRET,
     resave:false,
-    saveUninitialized:true,
+    saveUninitialized:false,
     cookie:{
         expires:Date.now()+7*24*60*60*1000,
         maxAge:7*24*60*60*1000,
         httpOnly:true,
     },
 };
-
-
-
 
 
 app.use(session(sessionOptions));
@@ -117,6 +115,8 @@ app.use((err, req, res, next) => {
 app.listen(8080,()=>{
     console.log("port is listening");
 });
+
+// startServer();
 // if (process.env.NODE_ENV !== "production") {
 //   require("dotenv").config();
 // }
