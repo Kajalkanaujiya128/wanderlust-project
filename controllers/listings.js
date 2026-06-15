@@ -49,129 +49,107 @@ return res.render("listings/show.ejs",{listing});
 };
 
 //for create
+// module.exports.createListing = async (req, res, next) => {
+//   try {
+
+//     const location = req.body.listing.location;
+
+//     const response = await fetch(
+//       `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
+//       {
+//         headers: { "User-Agent": "wanderlust-app" }
+//       }
+//     );
+
+//     const data = await response.json();
+
+//     const newListing = new Listing(req.body.listing);
+
+//     if (data.length > 0) {
+//       newListing.geometry = {
+//         type: "Point",
+//         coordinates: [
+//           parseFloat(data[0].lon),
+//           parseFloat(data[0].lat),
+//         ],
+//       };
+//     }
+
+//     newListing.owner = req.user._id;
+
+//     if (req.file) {
+//       newListing.image = {
+//         url: req.file.path,
+//         filename: req.file.filename,
+//       };
+//     }
+
+//     await newListing.save();
+
+//     req.flash("success", "new listing created");
+//     return res.redirect("/listings");
+
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 module.exports.createListing = async (req, res, next) => {
   try {
-
     const location = req.body.listing.location;
 
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
-      {
-        headers: { "User-Agent": "wanderlust-app" }
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}&limit=1`;
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "wanderlust-app (kajalkanaujiya@gmail.com)"
       }
-    );
+    });
 
-    const data = await response.json();
+    // SAFE PARSING (IMPORTANT)
+    const text = await response.text();
 
+    let data = [];
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.log("❌ Geocoding response not JSON:", text);
+      data = [];
+    }
+
+    // CREATE LISTING
     const newListing = new Listing(req.body.listing);
 
+    // GEO DATA ONLY IF AVAILABLE
     if (data.length > 0) {
       newListing.geometry = {
         type: "Point",
         coordinates: [
           parseFloat(data[0].lon),
-          parseFloat(data[0].lat),
-        ],
+          parseFloat(data[0].lat)
+        ]
       };
-    }
+    } 
 
     newListing.owner = req.user._id;
 
+    // IMAGE UPLOAD
     if (req.file) {
       newListing.image = {
         url: req.file.path,
-        filename: req.file.filename,
+        filename: req.file.filename
       };
     }
 
     await newListing.save();
 
-    req.flash("success", "new listing created");
+    req.flash("success", "New listing created successfully");
     return res.redirect("/listings");
 
   } catch (err) {
+    console.error("Create listing error:", err);
     next(err);
   }
 };
-// module.exports.createListing=async(req,res,next)=>{
-
-//   const location = req.body.listing.location;
-
-
-
-// const response = await fetch(
-
-//   `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
-
-//   {
-
-//     headers: {
-
-//       "User-Agent": "wanderlust-app"
-
-//     }
-
-//   }
-
-// );
-
-
-
-// const data = await response.json();
-
-
-
-// console.log("Location =", location);
-
-// console.log("Response =", data);
-
-
-
-//     let url=req.file.path;
-
-//     let filename=req.file.filename;
-
- 
-
-    
-
-// const newListing = new Listing(req.body.listing);
-
-// if (data.length > 0) {
-
-//   newListing.geometry = {
-
-//     type: "Point",
-
-//     coordinates: [
-
-//       parseFloat(data[0].lon),
-
-//       parseFloat(data[0].lat),
-
-//     ],
-
-//   };
-
-// }
-
-// newListing.owner=req.user._id;
-
-// newListing.image={url,filename};
-
-// console.log("Geometry before save =", newListing.geometry);
-
-//  await newListing.save();
-
-
-
-//  req.flash("success","new listing created");
-
-//  res.redirect("/listings");
-
-// };
-
-
 //for edit
 module.exports.renderEditForm=async(req,res)=>{
     let {id}=req.params;
