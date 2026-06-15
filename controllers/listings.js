@@ -128,7 +128,9 @@ module.exports.createListing = async (req, res, next) => {
           parseFloat(data[0].lat)
         ]
       };
-    } 
+    }  else {
+  newListing.geometry = null;
+}
 
     newListing.owner = req.user._id;
 
@@ -248,7 +250,9 @@ module.exports.updateListing = async (req, res) => {
         parseFloat(data[0].lat),
       ],
     };
-  }
+  } else {
+  newListing.geometry = null;
+}
 
   if (typeof req.file !== "undefined") {
     let url = req.file.path;

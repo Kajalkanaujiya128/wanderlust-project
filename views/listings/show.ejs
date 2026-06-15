@@ -97,12 +97,13 @@
       </div>
       
   <script>
-const coordinates = <%- JSON.stringify(listing.geometry.coordinates|| []) %>;
+const coordinates = <%- JSON.stringify(listing.geometry?.coordinates|| []) %>;
 
 console.log("Coordinates =", coordinates);
 console.log("Listing Location =", "<%= listing.location %>");
-if (coordinates && coordinates.length === 2) {
-
+// if (coordinates && coordinates.length === 2) {
+if (Array.isArray(coordinates) && coordinates.length === 2) {
+  
   const map = L.map("map",{zoomControl:false}).setView(
     [coordinates[1], coordinates[0]],
     13
