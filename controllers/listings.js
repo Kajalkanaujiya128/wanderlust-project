@@ -165,41 +165,81 @@ module.exports.renderEditForm=async(req,res)=>{
 };
 
 //for update
-// module.exports.updateListing=async(req,res)=>{
-//  let {id}=req.params;
-// let listing= await Listing.findByIdAndUpdate(id,{...req.body.listing});
-// if(typeof req.file !=="undefined"){
-//     let url=req.file.path;
-//     let filename=req.file.filename;
-//  listing.image={url,filename};
-//  await listing.save();
-// }
-//  req.flash("success","listing updated");
-//  res.redirect(`/listings/${id}`);
+
+// module.exports.updateListing = async (req, res) => {
+//   let { id } = req.params;
+
+//   let listing = await Listing.findById(id);
+
+//   // location se naye coordinates nikaalo
+//   const location = req.body.listing.location;
+
+//   const response = await fetch(
+//     `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
+//     {
+//       headers: {
+//         "User-Agent": "wanderlust-app"
+//       }
+//     }
+//   );
+
+//   const data = await response.json();
+
+//   // form ke saare fields update karo
+//   listing.set(req.body.listing);
+
+//   // geometry bhi update karo
+//   if (data.length > 0) {
+//     listing.geometry = {
+//       type: "Point",
+//       coordinates: [
+//         parseFloat(data[0].lon),
+//         parseFloat(data[0].lat),
+//       ],
+//     };
+//   }
+
+//   // image update
+//   if (typeof req.file !== "undefined") {
+//     let url = req.file.path;
+//     let filename = req.file.filename;
+//     listing.image = { url, filename };
+//   }
+// console.log("UPDATE ROUTE HIT");
+// console.log(req.body.listing.location);
+//   await listing.save();
+
+//   req.flash("success", "listing updated");
+//   res.redirect(`/listings/${id}`);
 // };
 module.exports.updateListing = async (req, res) => {
   let { id } = req.params;
 
   let listing = await Listing.findById(id);
 
-  // location se naye coordinates nikaalo
   const location = req.body.listing.location;
 
-  const response = await fetch(
-    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
-    {
-      headers: {
-        "User-Agent": "wanderlust-app"
-      }
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}&limit=1`;
+
+  const response = await fetch(url, {
+    headers: {
+      "User-Agent": "wanderlust-app (kajalkanaujiya@gmail.com)"
     }
-  );
+  });
 
-  const data = await response.json();
+  // SAFE PARSING (IMPORTANT)
+  const text = await response.text();
 
-  // form ke saare fields update karo
+  let data = [];
+  try {
+    data = JSON.parse(text);
+  } catch (err) {
+    console.log("Geocoding error:", text);
+    data = [];
+  }
+
   listing.set(req.body.listing);
 
-  // geometry bhi update karo
   if (data.length > 0) {
     listing.geometry = {
       type: "Point",
@@ -210,20 +250,17 @@ module.exports.updateListing = async (req, res) => {
     };
   }
 
-  // image update
   if (typeof req.file !== "undefined") {
     let url = req.file.path;
     let filename = req.file.filename;
     listing.image = { url, filename };
   }
-console.log("UPDATE ROUTE HIT");
-console.log(req.body.listing.location);
+
   await listing.save();
 
   req.flash("success", "listing updated");
   res.redirect(`/listings/${id}`);
 };
-
 //for delete
 module.exports.destroyListing=async(req,res)=>{
      let {id}=req.params;
