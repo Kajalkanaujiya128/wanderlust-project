@@ -56,7 +56,8 @@ filename:String,
         "Boats"
         
     ],
-   required:true
+
+ default: "Rooms"
 },
 });
 
