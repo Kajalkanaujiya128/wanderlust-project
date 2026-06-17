@@ -57,7 +57,7 @@ filename:String,
         
     ],
 
- default: "Rooms"
+ required:true
 },
 });
 

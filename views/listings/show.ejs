@@ -23,7 +23,8 @@
     </div>
     <br>
 
-<%if(locals.currUser && listing.owner._id.equals(locals.currUser._id)){%>
+
+  <% if (currUser && listing.owner && listing.owner._id.toString() === currUser._id.toString()) { %>
     <div class="btns">
     <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
   

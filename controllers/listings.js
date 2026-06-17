@@ -11,11 +11,12 @@ module.exports.index=async(req,res)=>{
 // FILTER CATEGORY
 module.exports.filterCategory = async(req,res)=>{
     let { category } = req.params;
+console.log("CATEGORY CLICKED =", category);
 
     let allListings = await Listing.find({
         category: category
     });
-
+console.log("FOUND =", allListings.length);
     res.render("listings/index.ejs",{allListings});
 };
 
@@ -251,7 +252,7 @@ module.exports.updateListing = async (req, res) => {
       ],
     };
   } else {
-  newListing.geometry = null;
+  listing.geometry = null;
 }
 
   if (typeof req.file !== "undefined") {
