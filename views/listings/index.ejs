@@ -102,7 +102,7 @@
 
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
 
-  <% if(allListings.length === 0) { %>
+<% if ((allListings.length === 0) && ((selectedCategory || "") === "Domes")) { %>
 
   <div style="text-align:center; width:100%; margin-top:60px;">
     <h2>Coming Soon: Dome Experiences</h2>
@@ -110,6 +110,13 @@
     <p>We’re working on magical stays under the stars ✨</p>
   </div>
 
+  <% } else if (allListings.length === 0) { %>
+
+  <div style="text-align:center; width:100%; margin-top:60px;">
+    <h2>No Listings Found 😕</h2>
+    <p>Try searching something else or browse categories above.</p>
+  </div>
+  
 <% } else { %>
   <% for(let listing of allListings){ %>
 
@@ -124,12 +131,25 @@
         >
 
         <div class="card-body">
+
           <p class="card-text">
-            <b><%= listing.title %></b>
-            <br>
-            &#8377; <%= listing.price.toLocaleString("en-IN") %>/night
-          <i class="tax-info">&nbsp; &nbsp; +18% GST</i>
-          </p>
+  <b><%= listing.title %></b>
+  <br>
+
+  <span class="original-price">
+    &#8377; <%= listing.price.toLocaleString("en-IN") %>
+  </span>
+
+  <span
+    class="tax-price"
+    data-price="<%= listing.price %>"
+    style="display:none;"
+  >
+    &#8377; <%= Math.round(listing.price * 1.18).toLocaleString("en-IN") %>
+  </span>
+
+  /night
+</p>
         </div>
 
       </div>
@@ -139,18 +159,41 @@
   <% } %>
 <% } %>
 </div>
+
 <script>
-  let taxSwitch=document.getElementById("flexswitchCheckDefault");
-  taxSwitch.addEventListener("click",()=>{
-   let taxInfo=document.getElementsByClassName("tax-info");
-  for(info of taxInfo){
-    if(info.style.display!="inline"){
-    info.style.display="inline";
-    }else{
-       info.style.display="none";
+let taxSwitch = document.getElementById("flexswitchCheckDefault");
+
+taxSwitch.addEventListener("change", () => {
+
+  let originalPrices =
+    document.getElementsByClassName("original-price");
+
+  let taxPrices =
+    document.getElementsByClassName("tax-price");
+
+  if (taxSwitch.checked) {
+
+    for(let price of originalPrices){
+      price.style.display = "none";
     }
+
+    for(let price of taxPrices){
+      price.style.display = "inline";
+    }
+
+  } else {
+
+    for(let price of originalPrices){
+      price.style.display = "inline";
+    }
+
+    for(let price of taxPrices){
+      price.style.display = "none";
+    }
+
   }
-  });
+
+});
 </script>
 </body>
 </html>

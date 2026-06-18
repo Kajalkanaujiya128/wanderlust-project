@@ -107,7 +107,7 @@ if (Array.isArray(coordinates) && coordinates.length === 2) {
   
   const map = L.map("map",{zoomControl:false}).setView(
     [coordinates[1], coordinates[0]],
-    13
+    14
   );
 
   L.tileLayer(
@@ -117,7 +117,7 @@ if (Array.isArray(coordinates) && coordinates.length === 2) {
     }
   ).addTo(map);
 const redIcon = L.icon({
-  // iconUrl: "https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-red.png",
+
     iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 
