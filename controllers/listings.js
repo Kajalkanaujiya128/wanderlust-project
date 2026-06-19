@@ -5,7 +5,12 @@ const Listing=require("../models/listing");
 //for index
 module.exports.index=async(req,res)=>{
  const allListings =await  Listing.find({});
-   res.render("listings/index",{allListings,  selectedCategory: "All"});
+   allListings.sort((a, b) => {
+    if (a.category === "Rooms" && b.category !== "Rooms") return -1;
+    if (a.category !== "Rooms" && b.category === "Rooms") return 1;
+    return 0;
+  });
+   res.render("listings/index",{allListings,  allListings, selectedCategory: "All"});
 };
 
 // FILTER CATEGORY
@@ -161,6 +166,8 @@ module.exports.updateListing = async (req, res) => {
     console.log("Geocoding error:", text);
     data = [];
   }
+  console.log("LOCATION =", location);
+console.log("GEOCODE DATA =", data);
 
   listing.set(req.body.listing);
 
@@ -175,6 +182,7 @@ module.exports.updateListing = async (req, res) => {
   } else {
   listing.geometry = null;
 }
+
 //image update
   if (typeof req.file !== "undefined") {
     let url = req.file.path;

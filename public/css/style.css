@@ -19,33 +19,42 @@ body{
     color:#222222 !important;
  }
  /*footer*/
- .f-info-links a{
-   text-decoration: none;
-   color: #222222;
- }
- .f-info-links a:hover{
-   text-decoration: underline;
-   
- }
- .f-info-links, .f-info-socials,.f-info-brand{
-   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
- }
- .f-info-socials i{
-    font-size: 1.2rem;
-   margin-right: 1rem;
- }
- .f-info{
-   text-align: center;
-   height: 8rem;
-   background-color: #ebebeb;
-   display:flex ;
-   flex-wrap: wrap;
-   justify-content: center;
-   align-items: space-evenly;
- }
+
+  .footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
+}
+
+.footer h5,
+.footer h6 {
+  color: #222;
+}
+
+.footer-links a {
+  display: block;
+  text-decoration: none;
+  color: #555;
+  margin: 0.3rem 0;
+  transition: 0.2s;
+}
+
+.footer-links a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+.footer-socials i {
+  font-size: 1.4rem;
+  margin-right: 0.8rem;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #444;
+}
+
+.footer-socials i:hover {
+  color: #000;
+  transform: scale(1.2);
+}
  /* cards */
  .listing-card{
    border: none !important;
